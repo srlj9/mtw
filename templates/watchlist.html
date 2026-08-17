@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>My Watchlist - MovieWatch</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F9E0D9;
+            color: #5D4954;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .back-btn {
+            background: #E6DBD0;
+            color: #5D4954;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .back-btn:hover {
+            background: #7D6167;
+            color: white;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        #watchlist-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .movie-card {
+            width: 200px;
+            background: #E6DBD0;
+            border: 1px solid #7D6167;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease;
+        }
+        .movie-card:hover {
+            transform: scale(1.05);
+        }
+        .movie-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .movie-card h3 {
+            font-size: 16px;
+            margin: 8px 0 4px 0;
+        }
+        .remove-btn {
+            width: 100%;
+            padding: 8px;
+            margin-top: 8px;
+            background: #b00020;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .remove-btn:hover {
+            background: #8a0018;
+        }
+        #empty-msg {
+            text-align: center;
+            color: #7D6167;
+            font-size: 18px;
+            margin-top: 50px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.href='/'">🎬 MovieWatch</div>
+        <button class="back-btn" onclick="window.location.href='/'">⬅ Back to Home</button>
+    </nav>
+
+    <h1>📌 My Watchlist</h1>
+
+    <div id="watchlist-container"></div>
+    <p id="empty-msg">Your watchlist is empty. Go add some movies! 🎬</p>
+
+    <script>
+        const userId = localStorage.getItem('user_id');
+
+if (!userId) {
+    alert('⚠️ Please login first!');
+    window.location.href = '/login';
+} else {
+    fetch(`http://127.0.0.1:5000/watchlist/${userId}`)
+        .then(response => response.json())
+        .then(data => {
+            displayWatchlist(data);
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function displayWatchlist(movies) {
+    const container = document.getElementById('watchlist-container');
+    const emptyMsg = document.getElementById('empty-msg');
+    container.innerHTML = '';
+
+    if (movies.length === 0) {
+        emptyMsg.style.display = 'block';
+        return;
+    }
+    emptyMsg.style.display = 'none';
+
+    movies.forEach(movie => {
+        const card = document.createElement('div');
+        card.className = 'movie-card';
+        card.innerHTML = `
+            <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title}">
+            <h3>${movie.title}</h3>
+            <button class="remove-btn" onclick="removeFromWatchlist(${movie.id})">✖ Remove</button>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function removeFromWatchlist(id) {
+    fetch(`http://127.0.0.1:5000/watchlist/${id}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('✅ Movie removed!');
+        location.reload(); // نعاودو نحملو الصفحة باش تحدث اللائحة
+    })
+    .catch(error => console.error('Error:', error));
+}
+    </script>
+</body>
+</html>

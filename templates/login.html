@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>Login / Signup - MovieWatch</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F9E0D9;
+            color: #5D4954;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .auth-container {
+            background: #E6DBD0;
+            padding: 30px;
+            border-radius: 10px;
+            width: 320px;
+            box-shadow: 0 8px 20px rgba(93,73,84,0.3);
+        }
+        .logo {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            background: #F9E0D9;
+            font-weight: bold;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab.active {
+            background: #754F5B;
+            color: white;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: none;
+            border-radius: 5px;
+            background: #F9E0D9;
+            color: #5D4954;
+            font-size: 14px;
+        }
+        input::placeholder {
+            color: #7D6167;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background: #754F5B;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .submit-btn:hover {
+            background: #5D4954;
+        }
+        .error-msg {
+            color: #b00020;
+            font-size: 13px;
+            margin-bottom: 10px;
+            display: none;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="logo">🎬 MovieWatch</div>
+
+        <div class="tabs">
+            <div class="tab active" id="tab-login" onclick="showTab('login')">Login</div>
+            <div class="tab" id="tab-signup" onclick="showTab('signup')">Sign Up</div>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form">
+            <p class="error-msg" id="login-error"></p>
+            <input type="email" id="login-email" placeholder="Email">
+            <input type="password" id="login-password" placeholder="Password">
+            <button class="submit-btn" onclick="handleLogin()">Login</button>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signup-form" class="hidden">
+            <p class="error-msg" id="signup-error"></p>
+            <input type="text" id="signup-username" placeholder="Username">
+            <input type="email" id="signup-email" placeholder="Email">
+            <input type="password" id="signup-password" placeholder="Password">
+            <button class="submit-btn" onclick="handleSignup()">Sign Up</button>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tab) {
+            document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+            document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+            document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
+            document.getElementById('signup-form').classList.toggle('hidden', tab !== 'signup');
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorEl = document.getElementById('login-error');
+            errorEl.style.display = 'none';
+
+            fetch('http://127.0.0.1:5000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Invalid email or password');
+                return response.json();
+            })
+            .then(data => {
+               console.log('Login success:', data);
+               localStorage.setItem('user_id', data.user_id);
+               localStorage.setItem('username', data.username);
+               window.location.href = '/';
+            })
+            .catch(error => {
+                errorEl.textContent = '❌ ' + error.message;
+                errorEl.style.display = 'block';
+            });
+        }
+
+        function handleSignup() {
+            const username = document.getElementById('signup-username').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const errorEl = document.getElementById('signup-error');
+            errorEl.style.display = 'none';
+
+            fetch('http://127.0.0.1:5000/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Signup failed. Try a different email.');
+                return response.json();
+            })
+            .then(data => {
+                console.log('Signup success:', data);
+                showTab('login'); // نرجعو لـ login بعد التسجيل
+            })
+            .catch(error => {
+                errorEl.textContent = '❌ ' + error.message;
+                errorEl.style.display = 'block';
+            });
+        }
+    </script>
+</body>
+</html>

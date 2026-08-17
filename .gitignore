@@ -1,0 +1,29 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
+# Environment variables (contains API keys)
+.env
+
+# Database (contains user emails & passwords)
+movie.db
+*.db
+*.sqlite
+*.sqlite3
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
