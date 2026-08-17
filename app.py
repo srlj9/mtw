@@ -203,6 +203,5 @@ def delete_account(user_id):
         return jsonify({"error": "User not found"}), 404
     return jsonify({"message": "Account deleted successfully"})
 
-
 if __name__ == "__main__":
     app.run(debug=True)
