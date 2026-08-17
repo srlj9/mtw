@@ -302,7 +302,7 @@
             document.getElementById('theme-toggle').textContent = isDark ? '☀️' : '🌙';
         }
 
-        fetch('http://127.0.0.1:5000/movies')
+        fetch('/movies')
             .then(response => response.json())
             .then(data => {
                 allMovies = data.results;
@@ -349,7 +349,7 @@
                 return;
             }
 
-            fetch('http://127.0.0.1:5000/watchlist', {
+            fetch('/watchlist', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

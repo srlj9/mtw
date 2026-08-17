@@ -127,7 +127,7 @@
             const errorEl = document.getElementById('login-error');
             errorEl.style.display = 'none';
 
-            fetch('http://127.0.0.1:5000/login', {
+            fetch('/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
@@ -155,7 +155,7 @@
             const errorEl = document.getElementById('signup-error');
             errorEl.style.display = 'none';
 
-            fetch('http://127.0.0.1:5000/register', {
+            fetch('/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, email, password })

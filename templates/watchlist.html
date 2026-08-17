@@ -113,7 +113,7 @@ if (!userId) {
     alert('⚠️ Please login first!');
     window.location.href = '/login';
 } else {
-    fetch(`http://127.0.0.1:5000/watchlist/${userId}`)
+    fetch(`/${userId}`)
         .then(response => response.json())
         .then(data => {
             displayWatchlist(data);
@@ -145,7 +145,7 @@ function displayWatchlist(movies) {
 }
 
 function removeFromWatchlist(id) {
-    fetch(`http://127.0.0.1:5000/watchlist/${id}`, {
+    fetch(`/${id}`, {
         method: 'DELETE'
     })
     .then(response => response.json())
